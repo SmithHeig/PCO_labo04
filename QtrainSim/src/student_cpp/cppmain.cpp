@@ -4,12 +4,13 @@
 #include <QList>
 
 //Creation d'une locomotive
-static Locomotive locomotive;
+static Locomotive locomotive1;
+static Locomotive locomotive2;
 
 //Arret d'urgence
 void emergency_stop()
 {
-    locomotive.arreter();
+    locomotive1.arreter();
     afficher_message("\nSTOP!");
 }
 
@@ -35,25 +36,34 @@ int cmain()
     diriger_aiguillage(17, TOUT_DROIT,  0);
     diriger_aiguillage(23, TOUT_DROIT,  0);
 
-    //Initialisation de la locomotive
-    locomotive.fixerNumero(1);
-    locomotive.fixerVitesse(12);
-    locomotive.fixerPosition(16, 23);
-    locomotive.allumerPhares();
-    locomotive.demarrer();
-    locomotive.afficherMessage("Ready!");
+    //Initialisation de la locomotive1
+    locomotive1.fixerNumero(1);
+    locomotive1.fixerVitesse(12);
+    locomotive1.fixerPosition(16, 23);
+    locomotive1.allumerPhares();
+    locomotive1.demarrer();
+    locomotive1.afficherMessage("Ready!");
+
+    //Initialisation de la locomotive2
+    locomotive2.fixerNumero(2);
+    locomotive2.fixerVitesse(20);
+    locomotive2.fixerPosition(34, 5);
+    locomotive2.allumerPhares();
+    locomotive2.demarrer();
+    locomotive2.afficherMessage("Ready!");
 
     //Attente du passage sur les contacts
     for (int i = 0; i < parcours.size(); i++) {
         attendre_contact(parcours.at(i));
         afficher_message(qPrintable(QString("The engine no. %1 has reached contact no. %2.")
-                                    .arg(locomotive.numero()).arg(parcours.at(i))));
-        locomotive.afficherMessage(QString("I've reached contact no. %1.").arg(parcours.at(i)));
+                                    .arg(locomotive1.numero()).arg(parcours.at(i))));
+        locomotive1.afficherMessage(QString("I've reached contact no. %1.").arg(parcours.at(i)));
     }
 
     //Arreter la locomotive
-    locomotive.arreter();
-    locomotive.afficherMessage("Yeah, piece of cake!");
+    locomotive1.arreter();
+    locomotive2.arreter();
+    locomotive1.afficherMessage("Yeah, piece of cake!");
 
     //Fin de la simulation
     mettre_maquette_hors_service();
