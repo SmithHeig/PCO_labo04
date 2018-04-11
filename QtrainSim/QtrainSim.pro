@@ -102,7 +102,8 @@ SOURCES += \
     src/voieaiguillageenroule.cpp \
     src/voieaiguillagetriple.cpp \
     src/ctrain_handler.cpp \
-    src/student_cpp/locomotive.cpp
+    src/student_cpp/locomotive.cpp \
+    src/student_cpp/manageloco.cpp
 
 HEADERS += \
     src/mainwindow.h \
@@ -126,6 +127,7 @@ HEADERS += \
     src/voieaiguillageenroule.h \
     src/voieaiguillagetriple.h \
     src/ctrain_handler.h \
-    src/student_cpp/locomotive.h
+    src/student_cpp/locomotive.h \
+    src/student_cpp/manageloco.h
 
 OTHER_FILES += infosVoies.txt

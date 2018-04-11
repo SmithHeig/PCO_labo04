@@ -4,8 +4,10 @@
 
 class ManageLoco
 {
+
 public:
     ManageLoco();
+
 };
 
 #endif // MANAGELOCO_H

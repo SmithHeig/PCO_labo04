@@ -25,7 +25,8 @@ int cmain()
 
     //Initialisation d'un parcours
     QList<int> parcours;
-    parcours << 16 << 15 << 14 << 7 << 6 << 5 << 34 << 33 << 32 << 25 << 24;
+    // parcours << 16 << 15 << 14 << 7 << 6 << 5 << 34 << 33 << 32 << 25 << 24;
+    parcours << 13 << 12 << 11 << 10 << 4 << 6 << 5 << 34 << 33 << 28 << 22 << 21 << 20 << 19;
 
     //Initialisation des aiguillages
     diriger_aiguillage(8,  DEVIE,       0);
@@ -38,7 +39,7 @@ int cmain()
 
     //Initialisation de la locomotive1
     locomotive1.fixerNumero(1);
-    locomotive1.fixerVitesse(12);
+    locomotive1.fixerVitesse(0);
     locomotive1.fixerPosition(16, 23);
     locomotive1.allumerPhares();
     locomotive1.demarrer();
@@ -47,7 +48,7 @@ int cmain()
     //Initialisation de la locomotive2
     locomotive2.fixerNumero(2);
     locomotive2.fixerVitesse(20);
-    locomotive2.fixerPosition(34, 5);
+    locomotive2.fixerPosition(13, 19);
     locomotive2.allumerPhares();
     locomotive2.demarrer();
     locomotive2.afficherMessage("Ready!");
