@@ -1,5 +1,6 @@
 #include "manageloco.h"
 #include "loco.h"
+/*
 Locomotive* ManageLoco::locomotive1;
 Locomotive* ManageLoco::locomotive2;
 
@@ -10,7 +11,7 @@ bool ManageLoco::locoWait;
 
 int ManageLoco::tourL1;
 int ManageLoco::tourL2;
-
+*/
 ManageLoco::ManageLoco(Locomotive& l1, Locomotive& l2)
 {
 
@@ -47,13 +48,13 @@ ManageLoco::ManageLoco(Locomotive& l1, Locomotive& l2)
 
 
 
-    critiquePointsList.append(new LocoListener(14, locomotive1->getID()));
-    critiquePointsList.append(new LocoListener(10, locomotive2->getID()));
-    critiquePointsList.append(new LocoListener(25, locomotive1->getID()));
-    critiquePointsList.append(new LocoListener(28, locomotive2->getID()));
+    critiquePointsList.append(new LocoListener(14, locomotive1->getID(), *this));
+    critiquePointsList.append(new LocoListener(10, locomotive2->getID(), *this));
+    critiquePointsList.append(new LocoListener(25, locomotive1->getID(), *this));
+    critiquePointsList.append(new LocoListener(28, locomotive2->getID(), *this));
 
-    critiquePointsList.append(new LocoListener(19, locomotive2->getID()));     // Inverser sens
-    critiquePointsList.append(new LocoListener(23, locomotive1->getID()));     // Inverser sens
+    critiquePointsList.append(new LocoListener(19, locomotive2->getID(), *this));     // Inverser sens
+    critiquePointsList.append(new LocoListener(23, locomotive1->getID(), *this));     // Inverser sens
 
     for(auto i = critiquePointsList.begin(); i != critiquePointsList.end(); ++i)
         (*i)->start();
@@ -89,8 +90,12 @@ void ManageLoco::traiterSectionCritique(int pos, int idLoco){
         sens = locomotive1->getSens();
     if(idLoco == 2)
         sens = locomotive2->getSens();
+    //afficher_message_loco(idLoco, "Passe contacte ");
 
-    std::cout << "Loco " << idLoco << " : Passe le contactes " << pos << ".  Attente: "<< locoWait<< "sens: " << sens <<" \n";
+
+
+    afficher_message_loco(idLoco, "Passe contacte " );
+   // std::cout << "Loco " << idLoco << " : Passe le contactes " << pos << ".  Attente: "<< locoWait<< "sens: " << sens <<" \n";
     mutex.unlock();
     switch(pos){
     case 19:
@@ -226,8 +231,8 @@ void ManageLoco::traiterSectionCritique(int pos, int idLoco){
     }
 }
 
-ManageLoco::LocoListener::LocoListener(int pos, int idLoco)
-    :pos(pos), idLoco(idLoco)
+ManageLoco::LocoListener::LocoListener(int pos, int idLoco, ManageLoco& it)
+    :pos(pos), idLoco(idLoco), refThis(it)
 {
     Loco::posLocos[0] = -1;
     Loco::posLocos[1] = -1;
@@ -237,8 +242,7 @@ void ManageLoco::LocoListener::run(){
     while(true){
         attendre_contact(pos);
         if(Loco::posLocos[idLoco - 1] == pos){
-            //std::cout << "Loco " << idLoco << " : fdtgzhugzftdrtfgzfutdrz le contact " << pos << "\n";
-            ManageLoco::traiterSectionCritique(Loco::posLocos[idLoco - 1], idLoco);
+            refThis.traiterSectionCritique(Loco::posLocos[idLoco - 1], idLoco);
         }
     };
 }

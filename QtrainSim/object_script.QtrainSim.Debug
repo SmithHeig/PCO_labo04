@@ -22,7 +22,6 @@ INPUT(
 ./tmp/win/obj/ctrain_handler.o
 ./tmp/win/obj/locomotive.o
 ./tmp/win/obj/manageloco.o
-./tmp/win/obj/locolistener.o
 ./tmp/win/obj/qrc_qtrainsim.o
 ./tmp/win/obj/moc_mainwindow.o
 ./tmp/win/obj/moc_voie.o
