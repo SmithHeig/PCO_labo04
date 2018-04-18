@@ -236,6 +236,13 @@ private:
     QTimer* timer;
     QWaitCondition* VarCond;
     QMutex* mutex;
+
+    int curContact ;
+
+public:
+
+    static int posLocos[2];
+
 };
 
 #endif // LOCO_H

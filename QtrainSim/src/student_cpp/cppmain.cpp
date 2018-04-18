@@ -1,6 +1,6 @@
 #include "ctrain_handler.h"
 #include "locomotive.h"
-
+#include "manageloco.h"
 #include <QList>
 
 //Creation d'une locomotive
@@ -26,7 +26,8 @@ int cmain()
     //Initialisation d'un parcours
     QList<int> parcours;
     // parcours << 16 << 15 << 14 << 7 << 6 << 5 << 34 << 33 << 32 << 25 << 24;
-    parcours << 13 << 12 << 11 << 10 << 4 << 6 << 5 << 34 << 33 << 28 << 22 << 21 << 20 << 19;
+    // parcours << 13 << 12 << 11 << 10 << 4 << 6 << 5 << 34 << 33 << 28 << 22 << 21 << 20 << 19;
+    parcours << 13 << 12;
 
     //Initialisation des aiguillages
     diriger_aiguillage(8,  DEVIE,       0);
@@ -37,33 +38,37 @@ int cmain()
     diriger_aiguillage(17, TOUT_DROIT,  0);
     diriger_aiguillage(23, TOUT_DROIT,  0);
 
-    //Initialisation de la locomotive1
-    locomotive1.fixerNumero(1);
-    locomotive1.fixerVitesse(0);
-    locomotive1.fixerPosition(16, 23);
-    locomotive1.allumerPhares();
-    locomotive1.demarrer();
-    locomotive1.afficherMessage("Ready!");
+    // INIT
+    diriger_aiguillage(5,  TOUT_DROIT,       0);
+    diriger_aiguillage(3,  DEVIE,       0);
+    diriger_aiguillage(20,  DEVIE,       0);
+    diriger_aiguillage(23,  TOUT_DROIT,       0);
 
-    //Initialisation de la locomotive2
-    locomotive2.fixerNumero(2);
-    locomotive2.fixerVitesse(20);
-    locomotive2.fixerPosition(13, 19);
-    locomotive2.allumerPhares();
-    locomotive2.demarrer();
-    locomotive2.afficherMessage("Ready!");
+    diriger_aiguillage(22, TOUT_DROIT,  0);
+    diriger_aiguillage(1, TOUT_DROIT,  0);
+    diriger_aiguillage(19, DEVIE,  0);
+    diriger_aiguillage(16, TOUT_DROIT,  0);
+    diriger_aiguillage(13, TOUT_DROIT,  0);
+    diriger_aiguillage(10, TOUT_DROIT,  0);
+    diriger_aiguillage(7, TOUT_DROIT,  0);
 
-    //Attente du passage sur les contacts
+    ManageLoco ml(locomotive1, locomotive2);
+    while (true) {
+    }
+
+
+
+/*
+    Attente du passage sur les contacts
     for (int i = 0; i < parcours.size(); i++) {
         attendre_contact(parcours.at(i));
         afficher_message(qPrintable(QString("The engine no. %1 has reached contact no. %2.")
                                     .arg(locomotive1.numero()).arg(parcours.at(i))));
         locomotive1.afficherMessage(QString("I've reached contact no. %1.").arg(parcours.at(i)));
     }
+    */
 
     //Arreter la locomotive
-    locomotive1.arreter();
-    locomotive2.arreter();
     locomotive1.afficherMessage("Yeah, piece of cake!");
 
     //Fin de la simulation

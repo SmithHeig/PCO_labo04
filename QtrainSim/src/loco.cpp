@@ -1,5 +1,9 @@
 #include "loco.h"
 #include "trainsimsettings.h"
+#include "ctrain_handler.h"
+
+int Loco::posLocos[2] = {-1, -1};
+
 
 panneauNumLoco::panneauNumLoco(int numLoco, QObject *parent) :
     QObject(parent)
@@ -60,7 +64,13 @@ Loco::Loco(int numLoco, QObject *parent) :
     this->VarCond = new QWaitCondition();
     setZValue(ZVAL_LOCO);
 
+    // DID
+    this->curContact = 0;
+
     CONNECT(timer, SIGNAL(timeout()), this, SLOT(adapterVitesse()));
+
+    this->posLocos[0] = -1;
+    this->posLocos[1] = -1;
 }
 
 void Loco::setVitesse(int v)
@@ -228,8 +238,25 @@ void Loco::avanceDUneVoie()
         voieActuelle->getContact()->active(); //pas ideal... A revoir.
         if (TrainSimSettings::getInstance()->getViewLocoLog())
         {
-            this->controller->console->append(QString("# Passe le contact numéro %1").arg(voieActuelle->getContact()->getNumContact()));
-            std::cout << "Loco " << this->numLoco1->getNumLoco() << " : Passe le contact " << voieActuelle->getContact()->getNumContact() << std::endl;
+
+//            this->controller->console->append(QString("# Passe le contact numéro %1").arg(voieActuelle->getContact()->getNumContact()));
+           // std::cout << "Loco " << this->numLoco1->getNumLoco() << " : Passe le contact " << voieActuelle->getContact()->getNumContact() << std::endl;
+
+            if(this->numLoco1->getNumLoco() == 1){
+                this->posLocos[0] = voieActuelle->getContact()->getNumContact();
+            }
+            if(this->numLoco1->getNumLoco() == 2){
+                this->posLocos[1] = voieActuelle->getContact()->getNumContact();
+            }
+
+            //curContact = voieActuelle->getContact()->getNumContact();
+
+            /*
+            if(voieActuelle->getContact()->getNumContact() == 14 )
+                diriger_aiguillage(3,  DEVIE,  0);
+            if(voieActuelle->getContact()->getNumContact() == 10 )
+                diriger_aiguillage(3,  TOUT_DROIT,  0);
+            */
         }
     }
 }

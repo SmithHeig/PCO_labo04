@@ -54,7 +54,7 @@ void diriger_aiguillage(int no_aiguillage, int direction, int temps_alim) {
  *   no_contact : No du contact dont on attend l'activation.
  */
 void attendre_contact(int no_contact) {
-    CMD_TRAIN->attendre_contact(no_contact);
+        CMD_TRAIN->attendre_contact(no_contact);
 }
 
 /*
