@@ -12,7 +12,8 @@ Locomotive::Locomotive() :
 Locomotive::Locomotive(int numero, int vitesse) :
     _numero(numero),
     _vitesse(vitesse),
-    _enFonction(false)
+    _enFonction(false),
+    _sens(true)
 {
 
 }
@@ -75,4 +76,10 @@ void Locomotive::arreter()
 void Locomotive::inverserSens()
 {
     inverser_sens_loco(_numero);
+    _sens = (!_sens);
+}
+
+bool Locomotive::getSens()
+{
+    return _sens;
 }

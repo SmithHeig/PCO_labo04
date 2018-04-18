@@ -8,6 +8,9 @@ bool ManageLoco::critSection;
 bool ManageLoco::locoCritSection[2];
 bool ManageLoco::locoWait;
 
+int ManageLoco::tourL1;
+int ManageLoco::tourL2;
+
 ManageLoco::ManageLoco(Locomotive& l1, Locomotive& l2)
 {
 
@@ -15,7 +18,7 @@ ManageLoco::ManageLoco(Locomotive& l1, Locomotive& l2)
     locomotive1 = &l1;
     locomotive2 = &l2;
     locomotive1->fixerNumero(1);
-    locomotive1->fixerVitesse(11);
+    locomotive1->fixerVitesse(20);
     locomotive1->fixerPosition(16, 23);
     locomotive1->allumerPhares();
     locomotive1->demarrer();
@@ -23,7 +26,7 @@ ManageLoco::ManageLoco(Locomotive& l1, Locomotive& l2)
 
 
     locomotive2->fixerNumero(2);
-    locomotive2->fixerVitesse(11);
+    locomotive2->fixerVitesse(20);
     locomotive2->fixerPosition(13, 19);
     locomotive2->allumerPhares();
     locomotive2->demarrer();
@@ -34,15 +37,21 @@ ManageLoco::ManageLoco(Locomotive& l1, Locomotive& l2)
     critSection = false;
     locoWait = false;
 
+    tourL1 = 1;         // commence à 1 pour le premier tour
+    tourL2 = 1;
+
     //setCritLoco1();
     setCritLoco1();
 
-    critiquePoints << 14 << 8 << 35 << 32;
+
 
     critiquePointsList.append(new LocoListener(14, 1));
     critiquePointsList.append(new LocoListener(10, 2));
     critiquePointsList.append(new LocoListener(32, 1));
     critiquePointsList.append(new LocoListener(28, 2));
+
+    critiquePointsList.append(new LocoListener(19, 2));     // Inverser sens
+    critiquePointsList.append(new LocoListener(23, 1));     // Inverser sens
 
     for(auto i = critiquePointsList.begin(); i != critiquePointsList.end(); ++i)
         (*i)->start();

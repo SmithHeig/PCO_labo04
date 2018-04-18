@@ -68,10 +68,13 @@ public:
     //! Change le sens de marche de la locomotive.
     void inverserSens();
 
+    bool getSens();
+
 private:
     int _numero;
     int _vitesse;
     bool _enFonction;
+    bool _sens;             // true = gauche à droite, false = droite à gauche
 };
 
 #endif // LOCOMOTIVE_H
