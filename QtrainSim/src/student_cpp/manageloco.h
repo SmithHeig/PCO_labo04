@@ -3,13 +3,26 @@
 
 #include "loco.h"
 #include "locomotive.h"
-#include "locoListener.h"
 #include "ctrain_handler.h"
 #include <QThread>
+#include <QMutex>
 #include "iostream"
 
 class ManageLoco
 {
+private:
+    // Class interne
+    class LocoListener : public QThread{
+    private:
+        const int pos;
+        const int idLoco;
+    public:
+        LocoListener(int rail, int idLoco);
+
+    protected:
+        void run() Q_DECL_OVERRIDE;
+    };
+
 public:
     ManageLoco(Locomotive& l1, Locomotive& l2);
     static void traiterSectionCritique(int pos, int idLoco);
@@ -21,7 +34,7 @@ private:
     static Locomotive* locomotive1;
     static Locomotive* locomotive2;
 
-    static std::mutex mutex;
+    static QMutex mutex;
     static bool critSection;
     static bool locoCritSection[2];
     static bool locoWait;
@@ -45,7 +58,6 @@ private:
         diriger_aiguillage(4,  TOUT_DROIT,       0);
         diriger_aiguillage(19,  TOUT_DROIT,       0);
     }
-
 };
 
 #endif // MANAGELOCO_H

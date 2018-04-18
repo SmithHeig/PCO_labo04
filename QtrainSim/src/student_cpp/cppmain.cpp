@@ -30,6 +30,8 @@ int cmain()
     parcours << 13 << 12;
 
     //Initialisation des aiguillages
+    
+    
     diriger_aiguillage(8,  DEVIE,       0);
     diriger_aiguillage(2,  DEVIE,       0);
     diriger_aiguillage(20, DEVIE,       0);

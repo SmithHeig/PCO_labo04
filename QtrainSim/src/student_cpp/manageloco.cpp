@@ -3,7 +3,7 @@
 Locomotive* ManageLoco::locomotive1;
 Locomotive* ManageLoco::locomotive2;
 
-std::mutex ManageLoco::mutex;
+QMutex ManageLoco::mutex;
 bool ManageLoco::critSection;
 bool ManageLoco::locoCritSection[2];
 bool ManageLoco::locoWait;
@@ -224,4 +224,21 @@ void ManageLoco::traiterSectionCritique(int pos, int idLoco){
         }
         break;
     }
+}
+
+ManageLoco::LocoListener::LocoListener(int pos, int idLoco)
+    :pos(pos), idLoco(idLoco)
+{
+    Loco::posLocos[0] = -1;
+    Loco::posLocos[1] = -1;
+}
+
+void ManageLoco::LocoListener::run(){
+    while(true){
+        attendre_contact(pos);
+        if(Loco::posLocos[idLoco - 1] == pos){
+            //std::cout << "Loco " << idLoco << " : fdtgzhugzftdrtfgzfutdrz le contact " << pos << "\n";
+            ManageLoco::traiterSectionCritique(Loco::posLocos[idLoco - 1], idLoco);
+        }
+    };
 }

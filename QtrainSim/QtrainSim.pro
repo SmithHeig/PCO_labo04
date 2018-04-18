@@ -103,8 +103,7 @@ SOURCES += \
     src/voieaiguillagetriple.cpp \
     src/ctrain_handler.cpp \
     src/student_cpp/locomotive.cpp \
-    src/student_cpp/manageloco.cpp \
-    src/student_cpp/locolistener.cpp
+    src/student_cpp/manageloco.cpp
 
 HEADERS += \
     src/mainwindow.h \
