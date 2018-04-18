@@ -13,7 +13,6 @@ void LocoListener::run(){
     while(true){
         attendre_contact(pos);
         if(Loco::posLocos[idLoco - 1] == pos){
-
             //std::cout << "Loco " << idLoco << " : fdtgzhugzftdrtfgzfutdrz le contact " << pos << "\n";
             ManageLoco::traiterSectionCritique(Loco::posLocos[idLoco - 1], idLoco);
         }

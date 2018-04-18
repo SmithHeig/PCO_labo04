@@ -1,10 +1,14 @@
 #include "locomotive.h"
 #include "ctrain_handler.h"
 
+int Locomotive::curID = 1;
+
 Locomotive::Locomotive() :
     _numero(-1),
     _vitesse(0),
-    _enFonction(false)
+    _enFonction(false),
+    _sens(true),
+    _id(curID++)
 {
 
 }
@@ -13,7 +17,8 @@ Locomotive::Locomotive(int numero, int vitesse) :
     _numero(numero),
     _vitesse(vitesse),
     _enFonction(false),
-    _sens(true)
+    _sens(true),
+    _id(curID++)
 {
 
 }
@@ -79,7 +84,17 @@ void Locomotive::inverserSens()
     _sens = (!_sens);
 }
 
-bool Locomotive::getSens()
+bool Locomotive::getSens() const
 {
     return _sens;
+}
+
+int Locomotive::getID() const
+{
+    return _id;
+}
+
+void Locomotive::setID(int id)
+{
+    _id = id;
 }

@@ -5,7 +5,8 @@
 
 class Locomotive
 {
-
+private:
+    static int curID;
 public:
 
     /** Constructeur.
@@ -68,10 +69,15 @@ public:
     //! Change le sens de marche de la locomotive.
     void inverserSens();
 
-    bool getSens();
+    bool getSens() const;
+
+    int getID() const;
+
+    void setID(int id);
 
 private:
     int _numero;
+    int _id;
     int _vitesse;
     bool _enFonction;
     bool _sens;             // true = gauche à droite, false = droite à gauche
