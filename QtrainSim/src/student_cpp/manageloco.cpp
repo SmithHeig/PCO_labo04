@@ -15,7 +15,7 @@ int ManageLoco::tourL2;
 ManageLoco::ManageLoco(Locomotive& l1, Locomotive& l2)
 {
 
-
+    mutex.lock();
     locomotive1 = &l1;
     locomotive2 = &l2;
 
@@ -23,17 +23,22 @@ ManageLoco::ManageLoco(Locomotive& l1, Locomotive& l2)
     locomotive1->fixerVitesse(12);
     locomotive1->fixerPosition(16, 23);
     locomotive1->allumerPhares();
-    locomotive1->demarrer();
+
     locomotive1->afficherMessage("Ready!");
 
 
-    locomotive2->fixerNumero(2);
-    locomotive2->fixerVitesse(12);
+    locomotive2->fixerNumero(13);
+    locomotive2->fixerVitesse(10);
     locomotive2->fixerPosition(13, 19);
     locomotive2->allumerPhares();
-    //locomotive2->inverserSens();
+
     locomotive2->demarrer();
+    locomotive1->demarrer();
     locomotive2->afficherMessage("Ready!");
+    afficher_message("GOOo");
+
+    init();
+
 
     locoCritSection[0] = false;
     locoCritSection[1] = false;
@@ -43,10 +48,12 @@ ManageLoco::ManageLoco(Locomotive& l1, Locomotive& l2)
     tourL1 = 1;         // commence à 1 pour le premier tour
     tourL2 = 1;
 
-    //setCritLoco1();
+    prio = 0;
+
+
     setCritLoco1();
 
-
+    mutex.unlock();
 
     critiquePointsList.append(new LocoListener(14, locomotive1->getID(), *this));
     critiquePointsList.append(new LocoListener(10, locomotive2->getID(), *this));
@@ -58,43 +65,39 @@ ManageLoco::ManageLoco(Locomotive& l1, Locomotive& l2)
 
     for(auto i = critiquePointsList.begin(); i != critiquePointsList.end(); ++i)
         (*i)->start();
-
-       // Loco::posLocos;
-
-/*
-    critiquePointsL1 << 10  << 34 << 30;
-    for (int i = 0; i < critiquePointsL1.size(); i++) {
-        attendre_contact(critiquePointsL1.at(i));
-        afficher_message(qPrintable(QString("The engine no. %1 has reached contact no. %2.")
-                                    .arg(locomotive1->numero()).arg(critiquePointsL1.at(i))));
-        locomotive1->afficherMessage(QString("I've reached contact no. %1.").arg(critiquePointsL1.at(i)));
-    }*/
-
-
-/*
-    //critiquePointsL1 << 10 << 14 << 34 << 30;
-    critiquePointsL2 << 10 << 34;
-    for (int i = 0; i < critiquePointsL2.size(); i++) {
-        attendre_contact(critiquePointsL2.at(i));
-        afficher_message(qPrintable(QString("The engine no. %1 has reached contact no. %2.")
-                                    .arg(locomotive2->numero()).arg(critiquePointsL2.at(i))));
-        locomotive2->afficherMessage(QString("I've reached contact no. %1.").arg(critiquePointsL2.at(i)));
     }
-*/
+
+
+void ManageLoco::setPrio(int p){
+    this->prio = p;
+    if(locoWait && !critSection){
+        locoCritSection[0] = true;
+        locoWait = false;
+
+        setCritLoco1();
+        locomotive1->demarrer();
     }
+}
 
 void ManageLoco::traiterSectionCritique(int pos, int idLoco){
     mutex.lock();
     bool sens;
-    if(idLoco == 1)
+    if(idLoco == 1){
+       //char* buf[30];
+       //strcpy(buf, "passe le contacte ");
+       //(buf, pos);
+        afficher_message_loco(1, qPrintable(QString("The engine no. %1 has reached contact no. %2.")
+                                            .arg(idLoco).arg(pos)));
         sens = locomotive1->getSens();
-    if(idLoco == 2)
+    }
+    if(idLoco == 2){
         sens = locomotive2->getSens();
+        afficher_message_loco(13, qPrintable(QString("The engine no. %1 has reached contact no. %2.")
+                                            .arg(idLoco).arg(pos)));
+    }
     //afficher_message_loco(idLoco, "Passe contacte ");
 
 
-
-    afficher_message_loco(idLoco, "Passe contacte " );
    // std::cout << "Loco " << idLoco << " : Passe le contactes " << pos << ".  Attente: "<< locoWait<< "sens: " << sens <<" \n";
     mutex.unlock();
     switch(pos){
@@ -107,12 +110,12 @@ void ManageLoco::traiterSectionCritique(int pos, int idLoco){
             locomotive2->demarrer();
             tourL2 = 0;
         }
-        //std::cout << "Loco " << tourL1 << " Sens: " << sens;
         mutex.unlock();
         break;
     case 23:
         mutex.lock();
-        if((++tourL1) == 3){
+        (++tourL1);
+        if(tourL1 == 3){
             locomotive1->arreter();
             locomotive1->inverserSens();
             locomotive1->demarrer();
@@ -120,54 +123,80 @@ void ManageLoco::traiterSectionCritique(int pos, int idLoco){
         }
         mutex.unlock();
         break;
+
     case 14:
     case 10:
         if(sens){
-            mutex.lock();
+
             if(critSection){
+                mutex.lock();
                 if(idLoco == 1){
                    locoWait = true;
-                    mutex.unlock();
                     locomotive1->arreter();
                 }
                 if(idLoco == 2){
-                    mutex.unlock();
                     setEvitement();
                 }
-                    //locomotive2->arreter();
-
-
-
-            } else{
-
-                locoCritSection[idLoco -1] = true;
-                critSection = true;
-                if(idLoco == 1)
-                    setCritLoco1();
-                if(idLoco == 2)
-                    setCritLoco2();
                 mutex.unlock();
+            } else{
+                switch(prio){
+                case 0:
+                    mutex.lock();
+                     if(!critSection){
+                        locoCritSection[idLoco -1] = true;
+                        critSection = true;
+                        if(idLoco == 1)
+                            setCritLoco1();
+                        if(idLoco == 2)
+                            setCritLoco2();
+
+                    }
+                     mutex.unlock();
+                    break;
+                case 1:
+                    mutex.lock();
+                    if(idLoco == 1){
+                        locoCritSection[0] = true;
+                        setCritLoco1();
+                        critSection = true;
+                    }
+                    if(idLoco == 2){
+                        setEvitement();
+                    }
+                    mutex.unlock();
+                    break;
+
+                case 2:
+                    mutex.lock();
+
+                    if(idLoco == 1){
+
+                        setCritLoco1();
+                        locoWait = true;
+                        locomotive1->arreter();
+
+                    }
+                    if(idLoco == 2){
+                        setCritLoco2();
+                        critSection = true;
+                        locoCritSection[1] = true;
+                    }
+                    mutex.unlock();
+                    break;
+                }
             }
         } else {
             mutex.lock();
             if(locoCritSection[idLoco-1] == true){ // Sort de criticSection
-                if(locoWait == true){
-                    //locoCritSection[idLoco-1] = false;
-
+                if(locoWait == true && prio != 2){
                     locoCritSection[0] = true;
                     locoWait = false;
-
                     setCritLoco1();
                     locomotive1->demarrer();
-
                 } else{
                      critSection = false;
-//                     locoCritSection[idLoco-1] = false;
-                    // mutex.unlock();
                 }
-
                 locoCritSection[idLoco-1] = false;
-                //std::cout << "Attente: "<< locoWait << "\n";
             }
             mutex.unlock();
             //mutex.unlock();
@@ -177,37 +206,89 @@ void ManageLoco::traiterSectionCritique(int pos, int idLoco){
     case 25:
     case 28:
         if(!sens){
-            mutex.lock();
-            if(critSection){
-                if(idLoco == 1){
-                   locoWait = true;
+            switch(prio){
+            case 0:
+                mutex.lock();
+                if(critSection){
+                    if(idLoco == 1){
+                       locoWait = true;
+                        mutex.unlock();
+                        locomotive1->arreter();
+                    }
+                    if(idLoco == 2){
+                        mutex.unlock();
+                        setEvitement();
+                    }
+                } else{
+                    locoCritSection[idLoco -1] = true;
+                    critSection = true;
+                    if(idLoco == 1)
+                        setCritLoco1();
+                    if(idLoco == 2)
+                        setCritLoco2();
                     mutex.unlock();
-                    locomotive1->arreter();
                 }
-                if(idLoco == 2){
+                break;
+            case 1:
+                mutex.lock();
+                if(critSection){
+                    if(idLoco == 1){
+                       locoWait = true;
+                        mutex.unlock();
+                        locomotive1->arreter();
+                    }
+                    if(idLoco == 2){
+                        mutex.unlock();
+                        setEvitement();
+                    }
+                } else{
+                    if(idLoco == 1){
+                        locoCritSection[0] = true;
+                        setCritLoco1();
+                        critSection = true;
+                    }
+                    if(idLoco == 2){
+                        setEvitement();
+                    }
                     mutex.unlock();
-                    setEvitement();
                 }
-                    //locomotive2->arreter();
 
+                break;
 
+            case 2:
+                mutex.lock();
+                if(critSection){
+                    if(idLoco == 1){
+                       locoWait = true;
+                        mutex.unlock();
+                        locomotive1->arreter();
+                    }
+                    if(idLoco == 2){
+                        mutex.unlock();
+                        setEvitement();
+                    }
+                } else{
+                    if(idLoco == 1){
 
-            } else{
+                        setCritLoco1();
+                        locoWait = true;
 
-                locoCritSection[idLoco -1] = true;
-                critSection = true;
-                if(idLoco == 1)
-                    setCritLoco1();
-                if(idLoco == 2)
-                    setCritLoco2();
-                mutex.unlock();
+                        locomotive1->arreter();
+
+                    }
+                    if(idLoco == 2){
+                        setCritLoco2();
+                        critSection = true;
+                        locoCritSection[1] = true;
+                    }
+                    mutex.unlock();
+                }
+                break;
             }
         } else {
             mutex.lock();
             if(locoCritSection[idLoco-1] == true){ // Sort de criticSection
-                if(locoWait == true){
-                    //locoCritSection[idLoco-1] = false;
-
+                if(locoWait == true && prio != 2){
                     locoCritSection[0] = true;
                     locoWait = false;
 
@@ -216,20 +297,17 @@ void ManageLoco::traiterSectionCritique(int pos, int idLoco){
 
                 } else{
                      critSection = false;
-//                     locoCritSection[idLoco-1] = false;
-                    // mutex.unlock();
                 }
 
                 locoCritSection[idLoco-1] = false;
-                //std::cout << "Attente: "<< locoWait << "\n";
             }
             mutex.unlock();
-            //mutex.unlock();
-
         }
         break;
     }
+
 }
+
 
 ManageLoco::LocoListener::LocoListener(int pos, int idLoco, ManageLoco& it)
     :pos(pos), idLoco(idLoco), refThis(it)
@@ -241,8 +319,12 @@ ManageLoco::LocoListener::LocoListener(int pos, int idLoco, ManageLoco& it)
 void ManageLoco::LocoListener::run(){
     while(true){
         attendre_contact(pos);
-        if(Loco::posLocos[idLoco - 1] == pos){
-            refThis.traiterSectionCritique(Loco::posLocos[idLoco - 1], idLoco);
-        }
+        //if(Loco::posLocos[idLoco - 1] == pos){
+        mut2.lock();
+            refThis.traiterSectionCritique(pos, idLoco);
+        mut2.unlock();
+        sleep(2);
+
+        //}
     };
 }

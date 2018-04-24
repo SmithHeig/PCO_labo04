@@ -14,6 +14,7 @@ private:
     // Class interne
     class LocoListener : public QThread{
     private:
+        QMutex mut2;
         ManageLoco& refThis;
         const int pos;
         const int idLoco;
@@ -25,10 +26,13 @@ private:
     };
 
 public:
+    ManageLoco();
     ManageLoco(Locomotive& l1, Locomotive& l2);
      void traiterSectionCritique(int pos, int idLoco);
+     void setPrio(int p);
 private:
-    int nbLoco = 2;
+     int prio;
+     int nbLoco = 2;
      int tourL1;
      int tourL2;
     //Creation d'une locomotive
@@ -44,11 +48,25 @@ private:
     QList<int> critiquePoints;
     QList<LocoListener*> critiquePointsList;
 private:
+
+
      void init(){
-        diriger_aiguillage(1,  TOUT_DROIT,       0);
-        diriger_aiguillage(2,  DEVIE,            0);
-        diriger_aiguillage(3,  DEVIE,            0);
-        diriger_aiguillage(1,  TOUT_DROIT,       0);
+         diriger_aiguillage(1, TOUT_DROIT,  0);
+         diriger_aiguillage(2,  DEVIE,       0);
+         diriger_aiguillage(5,  TOUT_DROIT,       0);
+         diriger_aiguillage(7, TOUT_DROIT,  0);
+         diriger_aiguillage(8,  DEVIE,       0);
+         diriger_aiguillage(9,  DEVIE,       0);
+         diriger_aiguillage(10,  TOUT_DROIT,       0);
+         diriger_aiguillage(11, TOUT_DROIT,  0);
+         diriger_aiguillage(13, TOUT_DROIT,  0);
+         diriger_aiguillage(14,  DEVIE,       0);
+         diriger_aiguillage(15,  DEVIE,       0);
+         diriger_aiguillage(16, TOUT_DROIT,  0);
+         diriger_aiguillage(17, TOUT_DROIT,  0);
+         diriger_aiguillage(21, DEVIE,  0);
+         diriger_aiguillage(22, TOUT_DROIT,  0);
+         diriger_aiguillage(23, TOUT_DROIT,  0);
     }
 
      void setCritLoco1(){

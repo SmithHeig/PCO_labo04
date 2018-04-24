@@ -235,6 +235,15 @@ void Loco::avanceDUneVoie()
 
         nouveauSegment(ctc1, ctc2, this);
 
+
+        if(this->numLoco1->getNumLoco() == 1){
+            this->posLocos[0] = voieActuelle->getContact()->getNumContact();
+        }
+        if(this->numLoco1->getNumLoco() == 6){
+            this->posLocos[1] = voieActuelle->getContact()->getNumContact();
+        }
+
+
         voieActuelle->getContact()->active(); //pas ideal... A revoir.
         if (TrainSimSettings::getInstance()->getViewLocoLog())
         {
@@ -245,7 +254,7 @@ void Loco::avanceDUneVoie()
             if(this->numLoco1->getNumLoco() == 1){
                 this->posLocos[0] = voieActuelle->getContact()->getNumContact();
             }
-            if(this->numLoco1->getNumLoco() == 2){
+            if(this->numLoco1->getNumLoco() == 13){
                 this->posLocos[1] = voieActuelle->getContact()->getNumContact();
             }
 
