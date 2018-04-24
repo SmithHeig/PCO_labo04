@@ -5,6 +5,7 @@
 
 #include "manageloco.h"
 #include "loco.h"
+#include "config.h"
 
 /*
 Locomotive* ManageLoco::locomotive1;
@@ -35,17 +36,17 @@ ManageLoco::ManageLoco(Locomotive& l1, Locomotive& l2)
     init();
 
     // Initalise la loco 1
-    locomotive1->fixerNumero(3);
+    locomotive1->fixerNumero(NUM_LOCO1);
     //locomotive1->fixerVitesse(5);         // Vitesse sur maquette
-    locomotive1->fixerVitesse(10);
+    locomotive1->fixerVitesse(VITESSE_LOCO1);
     locomotive1->fixerPosition(16, 23);
     locomotive1->allumerPhares();
     locomotive1->afficherMessage("Ready!");
 
     // Initalise la loco 2
-    locomotive2->fixerNumero(13);
+    locomotive2->fixerNumero(NUM_LOCO2);
     //locomotive2->fixerVitesse(9);         // Vitesse sur maquette
-    locomotive2->fixerVitesse(10);
+    locomotive2->fixerVitesse(VITESSE_LOCO2);
     locomotive2->fixerPosition(13, 19);
     locomotive2->allumerPhares();
     locomotive2->inverserSens();
@@ -58,8 +59,6 @@ ManageLoco::ManageLoco(Locomotive& l1, Locomotive& l2)
     critSection = false;
     locoWait = false;
 
-
-
     // Commence à 1 pour le premier tour
     tourL1 = 1;
     tourL2 = 1;
@@ -68,14 +67,14 @@ ManageLoco::ManageLoco(Locomotive& l1, Locomotive& l2)
     prio = 0;
 
     // Ajoute les listener sur les points d'entrées et sorties de la section critique
-    critiquePointsList.append(new LocoListener(14, locomotive1->getID(), *this));
-    critiquePointsList.append(new LocoListener(10, locomotive2->getID(), *this));
-    critiquePointsList.append(new LocoListener(25, locomotive1->getID(), *this));
-    critiquePointsList.append(new LocoListener(22, locomotive2->getID(), *this));
+    critiquePointsList.append(new LocoListener(POINT_CRITIQUE_LOCO1_1, locomotive1->getID(), *this));
+    critiquePointsList.append(new LocoListener(POINT_CRITIQUE_LOCO2_1, locomotive2->getID(), *this));
+    critiquePointsList.append(new LocoListener(POINT_CRITIQUE_LOCO1_2, locomotive1->getID(), *this));
+    critiquePointsList.append(new LocoListener(POINT_CRITIQUE_LOCO2_2, locomotive2->getID(), *this));
 
     // Ajoute les listenenr sur le points pour inverser le sens de la loco
-    critiquePointsList.append(new LocoListener(19, locomotive2->getID(), *this));     // Inverser sens
-    critiquePointsList.append(new LocoListener(23, locomotive1->getID(), *this));     // Inverser sens
+    critiquePointsList.append(new LocoListener(POINT_FIN_TOUR_LOCO2, locomotive2->getID(), *this));     // Inverser sens
+    critiquePointsList.append(new LocoListener(POINT_FIN_TOUR_LOCO1, locomotive1->getID(), *this));     // Inverser sens
 
     // Démarre les threads
     for(auto i = critiquePointsList.begin(); i != critiquePointsList.end(); ++i)
@@ -134,7 +133,7 @@ void ManageLoco::entreSectionCritique(int idLoco){
         }
     } else {            // section critique libre => la loco vas y rentrer
         switch(prio){   // Diferents cas en fonction de la priorités
-        case 0:     // Pas de prio, usage normal
+        case PRIO_AUCUNE:     // Pas de prio, usage normal
             locoCritSection[idLoco -1] = true;
             critSection = true;
             if(idLoco == 1)
@@ -142,7 +141,7 @@ void ManageLoco::entreSectionCritique(int idLoco){
             if(idLoco == 2)
                 setCritLoco2();
             break;
-        case 1:     // prio pour loco 1
+        case PRIO_LOCO1:     // prio pour loco 1
             if(idLoco == 1){    // La loco 1 entre en SC
                 locoCritSection[0] = true;
                 setCritLoco1();
@@ -153,7 +152,7 @@ void ManageLoco::entreSectionCritique(int idLoco){
             }
             break;
 
-        case 2:     // prio pour loco 2
+        case PRIO_LOCO2:     // prio pour loco 2
             if(idLoco == 1){     // La loco 1 s'arrête
                 setCritLoco1();
                 locoWait = true;
@@ -225,10 +224,10 @@ void ManageLoco::traiterPointLoco(int pos, int idLoco){
 
     // Traitement en fonction du point d'appelle
     switch(pos){
-    case 19:            // Loco 2 à fait un tour complet
+    case POINT_FIN_TOUR_LOCO1:            // Loco 2 à fait un tour complet
         mutex.lock();
         (++tourL2);
-        if(tourL2 == 3){        // on contrôle avec 3 car il y a l'aller-retour
+        if(tourL2 == NB_TOUR){        // on contrôle avec 3 car il y a l'aller-retour
             locomotive2->arreter();
             locomotive2->inverserSens();
             locomotive2->demarrer();
@@ -236,10 +235,10 @@ void ManageLoco::traiterPointLoco(int pos, int idLoco){
         }
         mutex.unlock();
         break;
-    case 23:            // loco 1 fait un tour complet
+    case POINT_FIN_TOUR_LOCO2:            // loco 1 fait un tour complet
         mutex.lock();
         (++tourL1);
-        if(tourL1 == 3){        // on contrôle avec 3 car il y a l'aller-retour
+        if(tourL1 == NB_TOUR){        // on contrôle avec 3 car il y a l'aller-retour
             locomotive1->arreter();
             locomotive1->inverserSens();
             locomotive1->demarrer();
@@ -248,8 +247,8 @@ void ManageLoco::traiterPointLoco(int pos, int idLoco){
         mutex.unlock();
         break;
 
-    case 14:
-    case 10:
+    case POINT_CRITIQUE_LOCO1_1:
+    case POINT_CRITIQUE_LOCO2_1:
         if(sens){
             // pas besoin de mutex car méthode déjà protégée
             entreSectionCritique(idLoco);
@@ -259,8 +258,8 @@ void ManageLoco::traiterPointLoco(int pos, int idLoco){
             sortSectionCritique(idLoco);
         }
         break;
-    case 25:
-    case 22:
+    case POINT_CRITIQUE_LOCO1_2:
+    case POINT_CRITIQUE_LOCO2_2:
         if(!sens){
             // pas besoin de mutex car méthode déjà protégée
             entreSectionCritique(idLoco);

@@ -1,0 +1,24 @@
+#ifndef CONFIG_H
+#define CONFIG_H
+
+#define POINT_CRITIQUE_LOCO1_1 14
+#define POINT_CRITIQUE_LOCO1_2 25
+#define POINT_CRITIQUE_LOCO2_1 10
+#define POINT_CRITIQUE_LOCO2_2 22
+
+#define POINT_FIN_TOUR_LOCO1 19
+#define POINT_FIN_TOUR_LOCO2 23
+
+#define NB_TOUR 3
+
+#define PRIO_AUCUNE 0
+#define PRIO_LOCO1 1
+#define PRIO_LOCO2 2
+
+#define NUM_LOCO1 3
+#define NUM_LOCO2 13
+
+#define VITESSE_LOCO1 10
+#define VITESSE_LOCO2 10
+
+#endif // CONFIG_H
