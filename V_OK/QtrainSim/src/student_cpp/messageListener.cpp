@@ -5,7 +5,7 @@
  */
 
 #include "messageListener.h"
-
+#include "config.h"
 /**
  * @brief MessageListener
  * @param ml - Manager de locomotive à modifier lors de commande
@@ -35,15 +35,15 @@ void MessageListener::run(){
 void MessageListener::analyseCommand(const char * s){
     mutex.lock();
     if(!strcmp("prio_0", s)){
-        manageLoco->setPrio(0);
+        manageLoco->setPrio(PRIO_AUCUNE);
         afficher_message(qPrintable(QString("Priority remove")));
     }
     else if(!strcmp("prio_1", s)){
-        manageLoco->setPrio(1);
+        manageLoco->setPrio(PRIO_LOCO1);
         afficher_message(qPrintable(QString("Priority set to loco 1")));
 
     }else if(!strcmp("prio_2", s)){
-        manageLoco->setPrio(2);
+        manageLoco->setPrio(PRIO_LOCO2);
         afficher_message(qPrintable(QString("Priority set to loco 2")));
     }else
         afficher_message(qPrintable(QString("Error: \"") + QString(s) + QString("\" is not a command")));

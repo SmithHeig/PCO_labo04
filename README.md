@@ -79,7 +79,7 @@ Il y a deux sortes de points de contact:
 
 - Les points de contacts qui servent d'entrées/sorties de section partagée:
   -  *25 et 14 pour laloco1.*
-  - *10 et 22 pour laloco2.*
+  -  *10 et 22 pour laloco2.*
 - Les points de contacts qui servent à compter quand une loco fait un tour complet et à inverser le sens 
   - *23 pour la loco1*.
   - *19 pour la loco2.*
@@ -88,4 +88,14 @@ Il y a deux sortes de points de contact:
 
 Le programme fonctionne sur la maquette, il faut juste faire attention à ne pas mettre une vitesse trop haute. Sinon les aiguillages n'ont pas le temps de se mettre à jour ou la locomotive ne s'arrête pas assez vite.
 
- 
+ ## Fichier de configuration (config.h)
+
+Le fichier config.h, contient les différentes constantes utilisé pour la configuration des trains et de la maquette.
+
+On y retrouve:
+
+- Les points de décision de la section critique
+- Les points de fin de tour
+- Les priorités
+- Le numéro des locomotives
+- La vitesse des locomotives
