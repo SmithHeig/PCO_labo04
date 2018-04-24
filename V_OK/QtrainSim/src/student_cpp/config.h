@@ -28,7 +28,7 @@
 #define NUM_LOCO2 13
 
 // Vitesse des locomotives
-#define VITESSE_LOCO1 15
-#define VITESSE_LOCO2 15
+#define VITESSE_LOCO1 10
+#define VITESSE_LOCO2 10
 
 #endif // CONFIG_H

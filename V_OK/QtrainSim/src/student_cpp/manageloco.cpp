@@ -88,9 +88,6 @@ ManageLoco::ManageLoco(Locomotive& l1, Locomotive& l2)
 }
 
 ManageLoco::~ManageLoco(){
-    /*for(auto i = critiquePointsList.begin(); i != critiquePointsList.end(); ++i)
-        (*i)->terminate();
-        */
 }
 
 /**
