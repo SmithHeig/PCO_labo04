@@ -1,3 +1,8 @@
+/**
+ * @file locomotive.h
+ * @authors Jeremie Chatillon et James Smith
+ */
+
 #ifndef LOCOMOTIVE_H
 #define LOCOMOTIVE_H
 
@@ -9,73 +14,116 @@ private:
     static int curID;
 public:
 
-    /** Constructeur.
-     * Initialise la locomotive avec un numero invalide et une vitesse nulle.
+    /**
+     * @brief Locomotive::Locomotive
+     * @remark Constructeur sans paramètre
      */
     Locomotive();
 
-    /** Constructeur.
-     * Initialise la locomotive en precisant son numero et sa vitesse initiale.
-     * @param numero Numero de la locomotive.
-     * @param vitesse Vitesse initiale de la locomotive.
+    /**
+     * @brief Locomotive::Locomotive
+     * @param numero - numéro de la locomotive
+     * @param vitesse - vitesse de la locomotive
+     * @remark Constructeur avec paramètres
      */
     Locomotive(int numero, int vitesse);
 
-    /** Retourne le numero de la locomotive.
-     * @return Numero de la locomotive.
+    /**
+     * @brief Locomotive::numero
+     * @return le numero de la locomotive
+     * @remark getter
      */
     int numero() const;
 
-    /** Fixe le numero de la locomotive.
-     * @param numero Numero de la locomotive.
+    /**
+     * @brief Locomotive::fixerNumero
+     * @param numero - nouveau numéro de la locomotive
+     * @remark setter
      */
     void fixerNumero(int numero);
 
-    /** Retourne la vitesse actuelle de la locomotive.
-     * @return Vitesse actuelle de la locomotive.
+    /**
+     * @brief Locomotive::vitesse
+     * @return la vitesse actuelle de la locomotive
+     * @remark getter
      */
     int vitesse() const;
 
-    /** Fixe la vitesse de la locomotive.
-     * Si la locomotive est en fonction, alors sa vitesse est modifiee en
-     * consequence.
-     * @param vitesse Vitesse de la locomotive.
+    /**
+     * @brief Locomotive::fixerVitesse
+     * @param vitesse - nouvelle vitesse de la locomotive
+     * @remark setter. Si "en fonction", va changer progressivement
      */
     void fixerVitesse(int vitesse);
 
-    /** Determine la position initiale de la locomotive.
-     * @param contactAvant Contact vers lequel la locomotive va se diriger.
-     * @param contactArrier Contact a l'arriere de la locomotive.
+    /**
+     * @brief Locomotive::fixerPosition
+     * @param contactAvant - numéro du contact positionner derrière la locomotive
+     * @param contactArriere - numéro du contact positionner devant la locomotive
+     * @remark setter - fixe la position de départ de la locomotive
      */
     void fixerPosition(int contactAvant, int contactArriere);
 
-    /** Affiche un message.
-     * @param message Message a afficher.
+    /**
+     * @brief Locomotive::afficherMessage
+     * @param message - message à afficher
+     * @remark Affiche un message dans l'UI
      */
     void afficherMessage(const QString &message);
 
-    //! Allume les phares de la locomotive.
+    /**
+     * @brief Locomotive::allumerPhares
+     * @remark Allume les phares de la locomotive
+     */
     void allumerPhares();
 
-    //! Eteint les phares de la locomotive.
+    /**
+     * @brief Locomotive::eteindrePhares
+     * @remark eteind les phars de la locomotive
+     */
     void eteindrePhares();
 
-    //! Demarre la locomotive.
+    /**
+     * @brief Locomotive::demarrer
+     * @remark Met en route la locomotive progressivement
+     */
     void demarrer();
 
-    //! Arrete la locomotive.
+    /**
+     * @brief Locomotive::arreter
+     * @remark arrête la locomotive
+     */
     void arreter();
 
-    //! Change le sens de marche de la locomotive.
+    /**
+     * @brief Locomotive::inverserSens
+     * @remark fait faire demi tour à la locomotive (repart dans l'autre sens
+     */
     void inverserSens();
 
+    /**
+     * @brief Locomotive::getSens
+     * @return donne le sens de la locomotive
+     * @remark getter
+     */
     bool getSens() const;
 
+    /**
+     * @brief Locomotive::getID
+     * @return l'id de la locomotive
+     * @remark getter
+     */
     int getID() const;
 
+    /**
+     * @brief Locomotive::setID
+     * @param id - set l'id de la locomotive
+     * @remark setter
+     */
     void setID(int id);
 
 private:
+    // Attributs
     int _numero;
     int _id;
     int _vitesse;

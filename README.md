@@ -18,10 +18,12 @@ Pour détecter quand une locomotive entre/sort de la voie commune, nous avons mi
 
 ### **Priorités:**
 
+Nous avons implémenté les priorités de façon que la locomotive qui est en priorité prenne toujours la voie commune. Donc l'autre ne doit jamais la prendre tant que la priorité est active.
+
 Pour la gestion des priorités, l'utilisateur peut enter 3 priorités :
 
 - prio_0: enlève la notion de priorité.
-- prio_1: donne la priorité à la loco 1, donc la loco 2 prends toujours la voie d'évitement
+- prio_1: donne la priorité à la loco 1, donc la loco 2 prends toujours la voie d'évitement.
 - prio_2: donne la priorité à la loco 2, donc la loco 1 s'arrête devant la voie commune jusqu'à un changement de priorité.
 
 Comme l'entrée utilisateur est une méthode bloquante, nous avons créé une classe qui hérite de Qthread
@@ -88,4 +90,6 @@ Il y a deux sortes de points de contact:
 
 Le programme fonctionne sur la maquette, il faut juste faire attention à ne pas mettre une vitesse trop haute. Sinon les aiguillages n'ont pas le temps de se mettre à jour ou la locomotive ne s'arrête pas assez vite.
 
- 
+## Tests
+
+Il n'y a pas de tests spécifiques pour l'implémentation de notre solution. Nous avons juste fait tourner le programme, changé les priorités et constaté que les locomotives se comportaient correctement.

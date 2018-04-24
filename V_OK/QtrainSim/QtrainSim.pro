@@ -131,6 +131,7 @@ HEADERS += \
     src/student_cpp/locomotive.h \
     src/student_cpp/manageloco.h \
     src/student_cpp/locoListener.h \
-    src/student_cpp/messageListener.h
+    src/student_cpp/messageListener.h \
+    src/student_cpp/config.h
 
 OTHER_FILES += infosVoies.txt
