@@ -1,5 +1,11 @@
+/**
+* @file manageloco.cpp
+* @authors Jeremie Chatillon et James Smith
+*/
+
 #include "manageloco.h"
 #include "loco.h"
+
 /*
 Locomotive* ManageLoco::locomotive1;
 Locomotive* ManageLoco::locomotive2;
@@ -12,16 +18,23 @@ bool ManageLoco::locoWait;
 int ManageLoco::tourL1;
 int ManageLoco::tourL2;
 */
+
+/**
+ * @brief ManageLoco::ManageLoco
+ * @param l1 - locomotive 1 à gérer
+ * @param l2 - locomotive 2 à gérer
+ * @remark constructeur avec paramètre
+ */
 ManageLoco::ManageLoco(Locomotive& l1, Locomotive& l2)
 {
-
+    // Conservation d'un référence sur les locomotives à gérer
     locomotive1 = &l1;
     locomotive2 = &l2;
 
-    // initalise les aiguillages
+    // Initalise les aiguillages
     init();
 
-    // initalise la loco 1
+    // Initalise la loco 1
     locomotive1->fixerNumero(3);
     //locomotive1->fixerVitesse(5);         // Vitesse sur maquette
     locomotive1->fixerVitesse(10);
@@ -29,7 +42,7 @@ ManageLoco::ManageLoco(Locomotive& l1, Locomotive& l2)
     locomotive1->allumerPhares();
     locomotive1->afficherMessage("Ready!");
 
-    // initalise la loco 2
+    // Initalise la loco 2
     locomotive2->fixerNumero(13);
     //locomotive2->fixerVitesse(9);         // Vitesse sur maquette
     locomotive2->fixerVitesse(10);
@@ -39,7 +52,7 @@ ManageLoco::ManageLoco(Locomotive& l1, Locomotive& l2)
     locomotive2->afficherMessage("Ready!");
 
 
-    // initalise la section critique
+    // Initalise la section critique
     locoCritSection[0] = false;
     locoCritSection[1] = false;
     critSection = false;
@@ -47,14 +60,14 @@ ManageLoco::ManageLoco(Locomotive& l1, Locomotive& l2)
 
 
 
-    // commence à 1 pour le premier tour
+    // Commence à 1 pour le premier tour
     tourL1 = 1;
     tourL2 = 1;
 
-    // pas de prio au départ
+    // Pas de prio au départ
     prio = 0;
 
-    // Ajoute les listener sur les points d'entrées et sorties de section critique
+    // Ajoute les listener sur les points d'entrées et sorties de la section critique
     critiquePointsList.append(new LocoListener(14, locomotive1->getID(), *this));
     critiquePointsList.append(new LocoListener(10, locomotive2->getID(), *this));
     critiquePointsList.append(new LocoListener(25, locomotive1->getID(), *this));
@@ -79,6 +92,14 @@ ManageLoco::~ManageLoco(){
         */
 }
 
+/**
+ * @brief ManageLoco::setPrio
+ * @param p
+ * @remark change la priorité des trains
+ *         prio 0: priorité normal, le premier dedans reserve la section critique
+ *         prio 1: la locomotive 1 à la priorité et la 2 passe toujours par l'évitement
+ *         prio 2: la locomotive 2 à la priorité et la 1 s'arrête et attends un changement de priorité
+ */
 void ManageLoco::setPrio(int p){
     this->prio = p;
     mutex.lock();
@@ -91,6 +112,11 @@ void ManageLoco::setPrio(int p){
     mutex.unlock();
 }
 
+/**
+ * @brief ManageLoco::entreSectionCritique
+ * @param idLoco - id de la locomotive entrant dans la section critique
+ * @remark gestion de la section critique selon locomotive, prio et l'autre locomotive
+ */
 void ManageLoco::entreSectionCritique(int idLoco){
     // On veut que toutes ces opértions soient atomiques  ce sont des variables
     //  partagées dans la classe et on ne veut pas qu'elles cahngent de valeur
@@ -145,6 +171,11 @@ void ManageLoco::entreSectionCritique(int idLoco){
 
 }
 
+/**
+ * @brief ManageLoco::sortSectionCritique
+ * @param idLoco - id de la locomotive sortant de la section critique
+ * @remark gestion de la libération de la section critique
+ */
 void ManageLoco::sortSectionCritique(int idLoco){
     // On veut que toutes ces opértions soient atomiques  ce sont des variables
     //  partagées dans la classe et on ne veut pas qu'elles cahngent de valeur
@@ -167,10 +198,15 @@ void ManageLoco::sortSectionCritique(int idLoco){
     mutex.unlock();
 }
 
-
+/**
+ * @brief ManageLoco::traiterPointLoco
+ * @param pos - numéro du capteur passé
+ * @param idLoco - locomotive ayant passé le capteur
+ * @remark check si le capteur à une importance et quoi faire
+ */
 void ManageLoco::traiterPointLoco(int pos, int idLoco){
 
-    // resupération local du sens (pour une utilisation ThreadSafe)
+    // recupération local du sens (pour une utilisation ThreadSafe)
     bool sens;
 
     mutex.lock();       // bloque le temps
@@ -236,14 +272,23 @@ void ManageLoco::traiterPointLoco(int pos, int idLoco){
     }
 }
 
-
-
+/**
+ * @brief ManageLoco::LocoListener::LocoListener
+ * @param pos - postion du capteur à écouter
+ * @param idLoco - loco qui passe sur le capteur
+ * @param it - manager à contacter lorsqu'il doit faire quelque chose
+ * @remark constructeur
+ */
 ManageLoco::LocoListener::LocoListener(int pos, int idLoco, ManageLoco& it)
     :pos(pos), idLoco(idLoco), refThis(it)
 {
-
+ // do nothing
 }
 
+/**
+ * @brief ManageLoco::LocoListener::run
+ * @remark thread qui écoute les contacts et qui appelle le traitement selon la position
+ */
 void ManageLoco::LocoListener::run(){
     while(true){
         attendre_contact(pos);
@@ -255,6 +300,10 @@ void ManageLoco::LocoListener::run(){
     };
 }
 
+/**
+ * @brief ManageLoco::init
+ * @remark Initialisation des aiguillages par rapport au parcours initial
+ */
 void ManageLoco::init(){
     diriger_aiguillage(1, TOUT_DROIT,  0);
     diriger_aiguillage(2,  DEVIE,       0);
@@ -274,10 +323,19 @@ void ManageLoco::init(){
     diriger_aiguillage(23, TOUT_DROIT,  0);
 }
 
+/**
+ * @brief ManageLoco::setCritLoco1
+ * @remark set l'aiguillage lorsque la loco1 rentre dans la section critique
+ */
 void ManageLoco::setCritLoco1(){
    diriger_aiguillage(3,  DEVIE,       0);
    diriger_aiguillage(20,  DEVIE,       0);
 }
+
+/**
+ * @brief ManageLoco::setCritLoco2
+ * @remark set l'aiguillage lorsque la loco2 rentre dans la section critique
+ */
 void ManageLoco::setCritLoco2(){
    diriger_aiguillage(3,  TOUT_DROIT,       0);
    diriger_aiguillage(4,  DEVIE,       0);
@@ -285,6 +343,10 @@ void ManageLoco::setCritLoco2(){
    diriger_aiguillage(19,  DEVIE,       0);
 }
 
+/**
+ * @brief ManageLoco::setEvitement
+ * @remark set l'aiguillage lorsque la loco2 doit passer pas la voie d'évitement
+ */
 void ManageLoco::setEvitement(){
    diriger_aiguillage(4,  TOUT_DROIT,       0);
    diriger_aiguillage(19,  TOUT_DROIT,       0);

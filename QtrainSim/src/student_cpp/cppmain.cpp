@@ -1,3 +1,7 @@
+/**
+ * @file cppmain.cpp
+ * @author Jeremie Chatillon et James Smith
+ */
 #include "ctrain_handler.h"
 #include "locomotive.h"
 #include "manageloco.h"
@@ -12,7 +16,11 @@ static Locomotive locomotive2;
 
 static QMutex* mutex;
 bool isLock;
-//Arret d'urgence
+
+/**
+ * @brief emergency_stop
+ * @remark Permet d'arrêter les deux trains
+ */
 void emergency_stop()
 {
     locomotive1.arreter();
@@ -22,9 +30,13 @@ void emergency_stop()
 }
 
 
-//Fonction principale
+/**
+ * @brief cmain
+ * @return Message d'erreur ou de réussite
+ */
 int cmain()
 {
+    // Initialisation du mutex
     mutex = new QMutex();
 
     afficher_message("Hit play to start the simulation...");
@@ -32,6 +44,7 @@ int cmain()
     //Choix de la maquette
     selection_maquette(MAQUETTE_A);
 
+    // Initialisation des aiguillage
     diriger_aiguillage(1, TOUT_DROIT,  0);
     diriger_aiguillage(2,  DEVIE,       0);
     diriger_aiguillage(5,  TOUT_DROIT,       0);
