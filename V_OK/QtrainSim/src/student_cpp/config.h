@@ -12,8 +12,8 @@
 #define POINT_CRITIQUE_LOCO2_2 22
 
 // Point de fin de tour
-#define POINT_FIN_TOUR_LOCO1 19
-#define POINT_FIN_TOUR_LOCO2 23
+#define POINT_FIN_TOUR_LOCO1 23
+#define POINT_FIN_TOUR_LOCO2 19
 
 // Nombre de tour avant demi tour
 #define NB_TOUR 3
@@ -28,7 +28,7 @@
 #define NUM_LOCO2 13
 
 // Vitesse des locomotives
-#define VITESSE_LOCO1 10
-#define VITESSE_LOCO2 10
+#define VITESSE_LOCO1 15
+#define VITESSE_LOCO2 15
 
 #endif // CONFIG_H

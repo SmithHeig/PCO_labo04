@@ -10,8 +10,6 @@
 
 class Locomotive
 {
-private:
-    static int curID;
 public:
 
     /**

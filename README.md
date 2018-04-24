@@ -51,11 +51,13 @@ Après avoir décrit la classe **LocoListener**, nous allons expliquer la métho
 
 Pour la gestion des entrées utilisateurs, nous avons implémenté la classe **messageListener** qui fonctionne comme la classe **LocoListener**. Vu que la fonction **getCommand()** est bloquante, ne fallait pas bloquer l'exécution du programme. Donc nous avons créé un thread qui attends en permanence une commande utilisateur. Une fois une commande reçue, la méthode **analyseCommand** est appelée pour taiter la commande et changer la priorité des locos en appelant la méthode **setPrio() **de la classe **ManageLoco**.
 
+Nous avons aussi modifé la classe **locomotive** en y ajoutant une variable qui indique le sens de la loco (avec ses getter et setter). La fonction **inverserSens()** modifie aussi cette variable. Nous avons aussi ajouté une variable id qui nous sert à savoir si c'est la loco1 (qui s'arrête) ou la loco2(qui prends la voie de déviement).
+
 #### Mutex et accès concurent
 
 Dans notre classe **ManageLoco**, nous avons décidé de vérouiller avec un mutex toutes les actions sur une ressource partagée. Nous avons fait cela pour grantire l'intégrité des variables. C'est aussi pour garantire qu'une instruction se fasse en entier sans qu'une autre commence et change les variables en cours de modification soient changées.
 
-## **Parcours**
+## Parcours
 
 Les deux locomotives ont un parcours prédéfinit. Tous les parcours sont enregistrés "en dur" dans la classe **ManageLoco**.
 

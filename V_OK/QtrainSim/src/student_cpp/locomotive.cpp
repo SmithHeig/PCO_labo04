@@ -6,8 +6,6 @@
 #include "locomotive.h"
 #include "ctrain_handler.h"
 
-// Compteur de loco
-int Locomotive::curID = 1;
 
 /**
  * @brief Locomotive::Locomotive
@@ -17,8 +15,7 @@ Locomotive::Locomotive() :
     _numero(-1),
     _vitesse(0),
     _enFonction(false),
-    _sens(true),
-    _id(curID++)
+    _sens(true)
 {
  // do nothing
 }
@@ -33,8 +30,7 @@ Locomotive::Locomotive(int numero, int vitesse) :
     _numero(numero),
     _vitesse(vitesse),
     _enFonction(false),
-    _sens(true),
-    _id(curID++)
+    _sens(true)
 {
 
 }

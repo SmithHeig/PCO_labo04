@@ -41,6 +41,7 @@ ManageLoco::ManageLoco(Locomotive& l1, Locomotive& l2)
     locomotive1->fixerVitesse(VITESSE_LOCO1);
     locomotive1->fixerPosition(16, 23);
     locomotive1->allumerPhares();
+    locomotive1->setID(1);
     locomotive1->afficherMessage("Ready!");
 
     // Initalise la loco 2
@@ -50,6 +51,7 @@ ManageLoco::ManageLoco(Locomotive& l1, Locomotive& l2)
     locomotive2->fixerPosition(13, 19);
     locomotive2->allumerPhares();
     locomotive2->inverserSens();
+    locomotive2->setID(2);
     locomotive2->afficherMessage("Ready!");
 
 
@@ -213,29 +215,18 @@ void ManageLoco::traiterPointLoco(int pos, int idLoco){
     //  critique
     if(idLoco == 1){
         sens = locomotive1->getSens();
-        afficher_message_loco(3, qPrintable(QString("The engine no. %1 has reached contact no. %2.")
-                                            .arg(idLoco).arg(pos)));
+        afficher_message_loco(locomotive1->numero(), qPrintable(QString("The engine no. %1 has reached contact no. %2.")
+                                            .arg(locomotive1->numero()).arg(pos)));
     } else if(idLoco == 2){
         sens = locomotive2->getSens();
-        afficher_message_loco(13, qPrintable(QString("The engine no. %1 has reached contact no. %2.")
-                                            .arg(idLoco).arg(pos)));
+        afficher_message_loco(locomotive2->numero(), qPrintable(QString("The engine no. %1 has reached contact no. %2.")
+                                            .arg(locomotive2->numero()).arg(pos)));
     }
     mutex.unlock();
 
     // Traitement en fonction du point d'appelle
     switch(pos){
-    case POINT_FIN_TOUR_LOCO1:            // Loco 2 à fait un tour complet
-        mutex.lock();
-        (++tourL2);
-        if(tourL2 == NB_TOUR){        // on contrôle avec 3 car il y a l'aller-retour
-            locomotive2->arreter();
-            locomotive2->inverserSens();
-            locomotive2->demarrer();
-            tourL2 = 0;
-        }
-        mutex.unlock();
-        break;
-    case POINT_FIN_TOUR_LOCO2:            // loco 1 fait un tour complet
+    case POINT_FIN_TOUR_LOCO1:            // loco 1 fait un tour complet
         mutex.lock();
         (++tourL1);
         if(tourL1 == NB_TOUR){        // on contrôle avec 3 car il y a l'aller-retour
@@ -246,7 +237,17 @@ void ManageLoco::traiterPointLoco(int pos, int idLoco){
         }
         mutex.unlock();
         break;
-
+    case POINT_FIN_TOUR_LOCO2:            // Loco 2 à fait un tour complet
+        mutex.lock();
+        (++tourL2);
+        if(tourL2 == NB_TOUR){        // on contrôle avec 3 car il y a l'aller-retour
+            locomotive2->arreter();
+            locomotive2->inverserSens();
+            locomotive2->demarrer();
+            tourL2 = 0;
+        }
+        mutex.unlock();
+        break;
     case POINT_CRITIQUE_LOCO1_1:
     case POINT_CRITIQUE_LOCO2_1:
         if(sens){
